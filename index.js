@@ -1,9 +1,20 @@
-//mongodb username:konradkonkel
-//const password = "DpEnG6ScvjgBuzNK";
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const mongoose = require("mongoose");
+
+// DO NOT SAVE YOUR PASSWORD TO GITHUB!!
+const url = `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`;
+
+mongoose.set("strictQuery", false);
+mongoose.connect(url);
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+});
+
+const Note = mongoose.model("Note", noteSchema);
 
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
@@ -44,8 +55,10 @@ app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
 
-app.get("/api/notes", (req, res) => {
-  res.json(notes);
+app.get("/api/notes", (request, response) => {
+  Note.find({}).then((notes) => {
+    response.json(notes);
+  });
 });
 
 const generateId = () => {
