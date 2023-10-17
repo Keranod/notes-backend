@@ -7,7 +7,7 @@ const password = process.argv[2];
 console.log(password);
 
 // DO NOT SAVE YOUR PASSWORD TO GITHUB!!
-const url = `mongodb+srv://fullstack:${password}@cluster0.o1opl.mongodb.net/?retryWrites=true&w=majority`;
+const url = `mongodb+srv://konradkonkel:${password}@notes.2wiia8a.mongodb.net/noteApp?retryWrites=true&w=majority`;
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url);
