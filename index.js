@@ -1,3 +1,6 @@
+//mongodb username:konradkonkel
+//const password = "DpEnG6ScvjgBuzNK";
+
 const express = require("express");
 const cors = require("cors");
 const app = express();
