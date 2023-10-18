@@ -4,7 +4,6 @@ const app = express();
 const mongoose = require("mongoose");
 
 const password = process.argv[2];
-console.log(password);
 
 // DO NOT SAVE YOUR PASSWORD TO GITHUB!!
 const url = `mongodb+srv://konradkonkel:${password}@notes.2wiia8a.mongodb.net/noteApp?retryWrites=true&w=majority`;
@@ -15,6 +14,14 @@ mongoose.connect(url);
 const noteSchema = new mongoose.Schema({
   content: String,
   important: Boolean,
+});
+
+noteSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
 });
 
 const Note = mongoose.model("Note", noteSchema);
@@ -36,23 +43,23 @@ app.use(requestLogger);
 app.use(cors());
 app.use(express.static("dist"));
 
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only JavaScript",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true,
-  },
-];
+// let notes = [
+//   {
+//     id: 1,
+//     content: "HTML is easy",
+//     important: true,
+//   },
+//   {
+//     id: 2,
+//     content: "Browser can execute only JavaScript",
+//     important: false,
+//   },
+//   {
+//     id: 3,
+//     content: "GET and POST are the most important methods of HTTP protocol",
+//     important: true,
+//   },
+// ];
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
