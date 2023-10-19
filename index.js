@@ -21,6 +21,19 @@ app.use(requestLogger);
 app.use(cors());
 app.use(express.static("dist"));
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+// this has to be the last loaded middleware.
+app.use(errorHandler);
+
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
@@ -48,7 +61,7 @@ app.post("/api/notes", (request, response) => {
   });
 });
 
-app.get("/api/notes/:id", (request, response) => {
+app.get("/api/notes/:id", (request, response, next) => {
   Note.findById(request.params.id)
     .then((note) => {
       if (note) {
@@ -57,10 +70,7 @@ app.get("/api/notes/:id", (request, response) => {
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-      response.status(500).end();
-    });
+    .catch((error) => next(error));
 });
 
 app.delete("/api/notes/:id", (request, response) => {
