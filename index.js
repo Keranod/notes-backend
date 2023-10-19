@@ -16,10 +16,10 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 
+app.use(express.static("dist"));
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());
-app.use(express.static("dist"));
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
@@ -33,6 +33,7 @@ const errorHandler = (error, request, response, next) => {
 
 // this has to be the last loaded middleware.
 app.use(errorHandler);
+app.use(unknownEndpoint);
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
@@ -73,14 +74,28 @@ app.get("/api/notes/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.delete("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter((note) => note.id !== id);
-
-  response.status(204).end();
+app.delete("/api/notes/:id", (request, response, next) => {
+  Note.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
-app.use(unknownEndpoint);
+app.put("/api/notes/:id", (request, reponse, next) => {
+  const body = request.body;
+
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updateNote) => {
+      response.json(updateNote);
+    })
+    .catch((error) => next(error));
+});
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
