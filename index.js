@@ -33,7 +33,6 @@ const errorHandler = (error, request, response, next) => {
 
 // this has to be the last loaded middleware.
 app.use(errorHandler);
-app.use(unknownEndpoint);
 
 app.get("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
@@ -96,6 +95,8 @@ app.put("/api/notes/:id", (request, reponse, next) => {
     })
     .catch((error) => next(error));
 });
+
+app.use(unknownEndpoint);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
