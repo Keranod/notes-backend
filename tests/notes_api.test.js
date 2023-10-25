@@ -121,7 +121,7 @@ describe('deletion of a note', () => {
         )
 
         const contents = notesAtEnd.map(r => r.content)
-
+            console.log(contents)
         expect(contents).not.toContain(noteToDelete.content)
     })
 })
