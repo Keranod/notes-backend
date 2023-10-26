@@ -1,7 +1,8 @@
-POST http://localhost:3001/api/notes
+POST http://ec2-35-178-178-115.eu-west-2.compute.amazonaws.com/api/notes
 content-type: application/json
 
 {
     "content": "Is it working?",
-    "important": true
+    "important": true,
+    "userId": "653a1b44bc918f969bb36fe0"
 }
